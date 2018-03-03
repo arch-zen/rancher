@@ -1,0 +1,8 @@
+version: '2'
+services:
+  rancher-lets-encrypt:
+    scale: 1
+    start_on_create: true
+  letsencrypt-nginx:
+    scale: 1
+    start_on_create: true
