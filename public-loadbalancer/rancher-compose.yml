@@ -1,0 +1,83 @@
+version: '2'
+services:
+  public-HTTPS:
+    scale: 1
+    start_on_create: true
+    lb_config:
+      certs:
+      - mc.objektarium.de
+      - bitbucket.objektarium.de
+      - jira.objektarium.de
+      - bamboo.objektarium.de
+      - confluence.objektarium.de
+      default_cert: cloud.objektarium.de
+      port_rules:
+      - hostname: cloud.objektarium.de
+        path: ''
+        priority: 1
+        protocol: https
+        service: nextcloud/nextcloud
+        source_port: 443
+        target_port: 80
+      - hostname: mc.objektarium.de
+        priority: 2
+        protocol: https
+        service: nginx-hello
+        source_port: 443
+        target_port: 80
+      - hostname: jira.objektarium.de
+        priority: 4
+        protocol: https
+        service: jira/jira-server
+        source_port: 443
+        target_port: 8080
+      - hostname: bamboo.objektarium.de
+        priority: 5
+        protocol: https
+        service: bamboo/bamboo-server
+        source_port: 443
+        target_port: 8085
+      - hostname: confluence.objektarium.de
+        path: ''
+        priority: 6
+        protocol: https
+        service: confluence/confluence-server
+        source_port: 443
+        target_port: 8090
+    health_check:
+      healthy_threshold: 2
+      response_timeout: 2000
+      port: 42
+      unhealthy_threshold: 3
+      initializing_timeout: 60000
+      interval: 2000
+      reinitializing_timeout: 60000
+  https-redirect:
+    start_on_create: true
+  public-HTTP:
+    start_on_create: true
+    lb_config:
+      certs: []
+      port_rules:
+      - path: /.well-known/
+        priority: 1
+        protocol: http
+        service: rancher-lets-encrypt/letsencrypt-nginx
+        source_port: 80
+        target_port: 80
+      - priority: 2
+        protocol: http
+        service: https-redirect
+        source_port: 80
+        target_port: 80
+    health_check:
+      healthy_threshold: 2
+      response_timeout: 2000
+      port: 42
+      unhealthy_threshold: 3
+      initializing_timeout: 60000
+      interval: 2000
+      reinitializing_timeout: 60000
+  nginx-hello:
+    scale: 1
+    start_on_create: true
