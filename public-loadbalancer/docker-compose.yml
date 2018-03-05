@@ -5,6 +5,7 @@ services:
     ports:
     - 443:443/tcp
     labels:
+      io.rancher.scheduler.affinity:host_label: lb=true
       io.rancher.container.agent.role: environmentAdmin,agent
       io.rancher.container.agent_service.drain_provider: 'true'
       io.rancher.container.create_agent: 'true'
@@ -13,13 +14,16 @@ services:
     stdin_open: true
     tty: true
     labels:
+      io.rancher.scheduler.affinity:host_label: lb=true
       io.rancher.container.pull_image: always
       io.rancher.scheduler.global: 'true'
   public-HTTP:
     image: rancher/lb-service-haproxy:v0.7.15
     ports:
     - 80:80/tcp
+    - 7999:7999/tcp
     labels:
+      io.rancher.scheduler.affinity:host_label: lb=true
       io.rancher.container.agent.role: environmentAdmin,agent
       io.rancher.container.agent_service.drain_provider: 'true'
       io.rancher.container.create_agent: 'true'
