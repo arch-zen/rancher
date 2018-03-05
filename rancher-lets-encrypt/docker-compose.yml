@@ -3,9 +3,9 @@ services:
   rancher-lets-encrypt:
     image: tozny/rancher-lets-encrypt
     environment:
-      CERTBOT_EMAIL: email@domain.de
+      CERTBOT_EMAIL: ***
       CERTBOT_WEBROOT: /var/www
-      DOMAINS: domain1, domain2
+      DOMAINS: ***
       HOST_CHECK_LOOP_TIME: '10'
       HOST_CHECK_PORT: '80'
       LOOP_TIME: '300'
