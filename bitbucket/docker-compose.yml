@@ -1,0 +1,15 @@
+version: '2'
+services:
+  bitbucket-server:
+    image: atlassian/bitbucket-server
+    environment:
+      SERVER_SECURE: 'true'
+      SERVER_SCHEME: https
+      SERVER_PROXY_PORT: '443'
+      SERVER_PROXY_NAME: bitbucket.objektarium.de
+    stdin_open: true
+    volumes:
+    - /srv/bitbucket:/var/atlassian/application-data/bitbucket
+    tty: true
+    labels:
+      io.rancher.container.pull_image: always
