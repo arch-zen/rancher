@@ -1,2 +1,2 @@
 # rancher
-My personal rancher scripts
+rancher scripts to setup an atlassian stack (bitbucket, bamboo, jira, ...) on some vps
