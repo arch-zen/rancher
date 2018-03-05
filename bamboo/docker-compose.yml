@@ -1,21 +1,23 @@
 version: '2'
 services:
   bamboo:
-    image: sxmichael/docker-bamboo-server
+    image: cptactionhank/atlassian-bamboo
     environment:
       X_PROXY_NAME: bamboo.objektarium.de
       X_PROXY_PORT: '443'
       X_PROXY_SCHEME: https
       X_PROXY_PATH: /
       BAMBOO_VERSION: 6.4.0
+      JAVA_OPTS: -Xmx2048m
+      TZ: Europe/Berlin
     stdin_open: true
     volumes:
+    - /var/run/docker.sock:/var/run/docker.sock
     - /srv/bamboo/data:/var/atlassian/bamboo
     - /srv/bamboo/logs:/opt/atlassian/bamboo/logs
-    - /var/run/docker.sock:/var/run/docker.sock
+    - /usr/bin/docker:/usr/bin/docker:ro
     tty: true
     labels:
-      io.rancher.container.hostname_override: container_name
       io.rancher.container.pull_image: always
       io.rancher.scheduler.affinity:host_label_ne: lb=true
   bamboo-agent:
