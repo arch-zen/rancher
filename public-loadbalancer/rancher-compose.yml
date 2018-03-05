@@ -5,45 +5,65 @@ services:
     start_on_create: true
     lb_config:
       certs:
-      - mc.objektarium.de
-      - bitbucket.objektarium.de
-      - jira.objektarium.de
       - bamboo.objektarium.de
       - confluence.objektarium.de
-      default_cert: cloud.objektarium.de
+      - jira.objektarium.de
+      - bitbucket.objektarium.de
+      - webdav.objektarium.de
+      - jenkins.objektarium.de
+      - teamcity.objektarium.de
+      - gitlab.objektarium.de
+      - cloud.objektarium.de
+      default_cert: zeus.objektarium.de
       port_rules:
-      - hostname: cloud.objektarium.de
+      - hostname: bitbucket.objektarium.de
         path: ''
         priority: 1
         protocol: https
-        service: nextcloud/nextcloud
+        service: bitbucket/bitbucket-server
         source_port: 443
-        target_port: 80
-      - hostname: mc.objektarium.de
-        priority: 2
-        protocol: https
-        service: nginx-hello
-        source_port: 443
-        target_port: 80
+        target_port: 7990
       - hostname: jira.objektarium.de
-        priority: 4
+        path: ''
+        priority: 2
         protocol: https
         service: jira/jira-server
         source_port: 443
         target_port: 8080
       - hostname: bamboo.objektarium.de
-        priority: 5
+        priority: 3
         protocol: https
-        service: bamboo/bamboo-server
+        service: bamboo/bamboo
         source_port: 443
         target_port: 8085
-      - hostname: confluence.objektarium.de
+      - hostname: cloud.objektarium.de
+        path: ''
+        priority: 4
+        protocol: https
+        service: postgresql/adminer
+        source_port: 443
+        target_port: 8080
+      - hostname: zeus.objektarium.de
+        path: ''
+        priority: 5
+        protocol: https
+        service: nginx-hello
+        source_port: 443
+        target_port: 80
+      - hostname: gitlab.objektarium.de
         path: ''
         priority: 6
         protocol: https
-        service: confluence/confluence-server
+        service: bitbucket/bitbucket-server
         source_port: 443
-        target_port: 8090
+        target_port: 7990
+      - hostname: webdav.objektarium.de
+        path: ''
+        priority: 7
+        protocol: https
+        service: postgresql/adminer
+        source_port: 443
+        target_port: 8080
     health_check:
       healthy_threshold: 2
       response_timeout: 2000
@@ -60,16 +80,21 @@ services:
       certs: []
       port_rules:
       - path: /.well-known/
-        priority: 1
+        priority: 2
         protocol: http
         service: rancher-lets-encrypt/letsencrypt-nginx
         source_port: 80
         target_port: 80
-      - priority: 2
+      - priority: 3
         protocol: http
         service: https-redirect
         source_port: 80
         target_port: 80
+      - priority: 4
+        protocol: tcp
+        service: bitbucket/bitbucket-server
+        source_port: 7999
+        target_port: 7999
     health_check:
       healthy_threshold: 2
       response_timeout: 2000
@@ -77,6 +102,7 @@ services:
       unhealthy_threshold: 3
       initializing_timeout: 60000
       interval: 2000
+      strategy: recreate
       reinitializing_timeout: 60000
   nginx-hello:
     scale: 1
