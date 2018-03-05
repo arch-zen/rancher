@@ -1,10 +1,24 @@
 version: '2'
 services:
-  db:
-    image: postgres
+  postgres:
+    image: postgres:9.6-alpine
     environment:
       POSTGRES_PASSWORD: ***
+      POSTGRES_USER: ***
+    stdin_open: true
+    volumes:
+    - /srv/postgresql:/var/lib/postgresql/data
+    tty: true
+    ports:
+    - 5432:5432/tcp
+    labels:
+      io.rancher.scheduler.affinity:host_label: dbhost=true
+      io.rancher.container.hostname_override: container_name
+      io.rancher.container.pull_image: always
   adminer:
     image: adminer
-    ports:
-    - 8080:8080/tcp
+    stdin_open: true
+    tty: true
+    labels:
+      io.rancher.container.pull_image: always
+      io.rancher.scheduler.affinity:host_label: dbhost=true
