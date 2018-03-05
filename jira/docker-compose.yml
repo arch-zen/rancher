@@ -1,0 +1,17 @@
+version: '2'
+services:
+  jira-server:
+    image: cptactionhank/atlassian-jira
+    environment:
+      X_PROXY_NAME: jira.objektarium.de
+      X_PROXY_PORT: '443'
+      X_PROXY_SCHEME: https
+      X_PATH: /
+    stdin_open: true
+    volumes:
+    - /srv/jira/data:/var/atlassian/jira
+    - /srv/jira/logs:/opt/atlassian/jira/logs
+    tty: true
+    labels:
+      io.rancher.container.pull_image: always
+      io.rancher.container.hostname_override: container_name
