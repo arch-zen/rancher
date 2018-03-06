@@ -1,8 +1,10 @@
 # rancher
 rancher scripts to setup an atlassian stack (bitbucket, bamboo, jira, ...) on some vps
 
-rancher worker nodes setup:
+## rancher worker nodes setup:
+-----------------------------
 
+```bash
 rpm -q container-selinux
 sudo yum install selinux-policy-devel
 vi virtpatch.te
@@ -20,4 +22,5 @@ sudo firewall-cmd --zone=public --permanent --add-rich-rule='rule protocol value
 sudo firewall-cmd --zone=public --permanent --add-port=500/udp
 sudo firewall-cmd --zone=public --permanent --add-port=4500/udp
 sudo firewall-cmd --permanent --add-service="ipsec"
+``` 
 
