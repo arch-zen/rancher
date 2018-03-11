@@ -26,6 +26,11 @@ sudo firewall-cmd --zone=public --permanent --add-rich-rule='rule protocol value
 sudo firewall-cmd --zone=public --permanent --add-rich-rule='rule protocol value="ah" accept'
 sudo firewall-cmd --zone=public --permanent --add-port=500/udp
 sudo firewall-cmd --zone=public --permanent --add-port=4500/udp
+
+sudo firewall-cmd --permanent --zone=trusted --add-port=500/udp
+sudo firewall-cmd --permanent --zone=trusted --add-port=4500/udp
 sudo firewall-cmd --permanent --add-service="ipsec"
+sudo firewall-cmd --reload
+
 ``` 
 
