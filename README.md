@@ -20,7 +20,10 @@ sudo firewall-cmd --state
 sudo firewall-cmd --get-active-zones
 
 sudo firewall-cmd --permanent --zone=trusted --add-interface=docker0
+sudo firewall-cmd --permanent --zone=trusted --change-interface=docker0
+
 sudo firewall-cmd --zone=trusted --add-port=80/tcp
+sudo firewall-cmd --permanent --zone=trusted --add-port=8080/tcp
 
 sudo firewall-cmd --zone=public --permanent --add-rich-rule='rule protocol value="esp" accept'
 sudo firewall-cmd --zone=public --permanent --add-rich-rule='rule protocol value="ah" accept'
