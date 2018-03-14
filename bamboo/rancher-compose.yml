@@ -1,8 +1,5 @@
 version: '2'
 services:
-  bamboo:
+  bamboo-server:
     scale: 1
-    start_on_create: true
-  bamboo-agent:
-    scale: 2
     start_on_create: true
