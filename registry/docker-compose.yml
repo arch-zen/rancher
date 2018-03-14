@@ -1,0 +1,71 @@
+version: '2'
+services:
+  registry:
+    image: registry:2.3.1
+    environment:
+      REGISTRY_AUTH: token
+      REGISTRY_AUTH_TOKEN_ISSUER: registry.objektarium.de
+      REGISTRY_AUTH_TOKEN_REALM: https://registry.objektarium.de:443/v2/token
+      REGISTRY_AUTH_TOKEN_ROOTCERTBUNDLE: /certs/registry.crt
+      REGISTRY_AUTH_TOKEN_SERVICE: registry.objektarium.de:5000
+      REGISTRY_HTTP_SECRET: httpsecret
+      REGISTRY_HTTP_TLS_CERTIFICATE: /certs/registry.crt
+      REGISTRY_HTTP_TLS_KEY: /certs/registry.key
+      REGISTRY_LOG_LEVEL: info
+      REGISTRY_NOTIFICATIONS_ENDPOINTS: |-
+        - name: portus
+          url: http://portus:3000/v2/webhooks/events
+          timeout: 500
+          threshold: 5
+          backoff: 1
+      REGISTRY_STORAGE_DELETE_ENABLED: 'true'
+    stdin_open: true
+    volumes:
+    - /srv/registry/certs:/certs
+    - /srv/registry/data:/var/lib/registry
+    tty: true
+    links:
+    - portus:portus
+  registry-mysql-db:
+    image: mysql:5.7.10
+    environment:
+      MYSQL_DATABASE: portus
+      MYSQL_PASSWORD: ***
+      MYSQL_ROOT_PASSWORD: ***
+      MYSQL_USER: portus
+    stdin_open: true
+    volumes:
+    - /srv/registry/db:/var/lib/mysql
+    tty: true
+    labels:
+      registry.portus.db: '1'
+  portus:
+    image: sshipway/portus:2.0.5
+    environment:
+      PORTUS_CHECK_SSL_USAGE_ENABLED: 'true'
+      PORTUS_GRAVATAR_ENABLED: 'true'
+      PORTUS_KEY_PATH: /certs/registry.key
+      PORTUS_MACHINE_FQDN: registry.objektarium.de
+      PORTUS_PASSWORD: ***
+      PORTUS_PORT: '443'
+      PORTUS_PRODUCTION_DATABASE: portus
+      PORTUS_PRODUCTION_HOST: registry-mysql-db
+      PORTUS_PRODUCTION_PASSWORD: ***
+      PORTUS_PRODUCTION_USERNAME: portus
+      PORTUS_SECRET_KEY_BASE: ***
+      PORTUS_SMTP_ENABLED: 'false'
+      REGISTRY_HOSTNAME: registry.objektarium.de
+      REGISTRY_NAME: Registry
+      REGISTRY_PORT: '5000'
+      REGISTRY_SSL_ENABLED: 'true'
+    stdin_open: true
+    volumes:
+    - /srv/registry/certs:/certs
+    - /srv/registry/proxy:/etc/nginx/conf.d
+    tty: true
+    links:
+    - registry-mysql-db:registry-mysql-db
+    labels:
+      registry.portus.app: '1'
+      io.rancher.scheduler.affinity:container_label_soft: registry.portus.db=1
+      io.rancher.container.pull_image: always
