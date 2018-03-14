@@ -1,0 +1,11 @@
+version: '2'
+services:
+  registry:
+    scale: 1
+    start_on_create: true
+  registry-mysql-db:
+    scale: 1
+    start_on_create: true
+  portus:
+    scale: 1
+    start_on_create: true
